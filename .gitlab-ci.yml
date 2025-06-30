@@ -15,7 +15,7 @@ build-pip-package:
         VERSION="0.0.0-dev"
       fi
     - echo "__version__ = \"$VERSION\"" > auto_commit_ai/_version.py
-    - echo "Updated auto_commit_ai/_version.py with version: $VERSION"
+    # - echo "Updated auto_commit_ai/_version.py with version: $VERSION"
     - python -m pip install build
     - python -m build
     - python -m pip install twine
