@@ -1,3 +1,4 @@
+import sys
 from typing import Optional
 
 from .config import Config
@@ -75,12 +76,6 @@ class AutoCommitGenerator:
             elif response in ["n", "no"]:
                 print("Commit cancelled.")
                 return
-            # elif response in ["e", "edit", "editar"]:
-            #     commit_message = input("Insert your commit message: ").strip()
-            #     if commit_message:
-            #         break
-            #     else:
-            #         print("The message cannot be empty.")
             else:
                 print("Reply with 'y' to confirm or 'n' to cancel.")
 
@@ -93,5 +88,24 @@ class AutoCommitGenerator:
         try:
             self.git_utils.commit_with_message(commit_message)
             print("✅ Commit successful!")
+            while True:
+                push_response = (
+                    input("\nWould you like to push the changes? (y/n): ")
+                    .lower()
+                    .strip()
+                )
+                if push_response in ["y", "yes", "sí", "si"]:
+                    try:
+                        self.git_utils.push_changes()
+                    except Exception as e:
+                        print(
+                            f"❌ Error pushing changes: {e}", file=sys.stderr
+                        )  # Import sys for this
+                    break  # Exit the push loop
+                elif push_response in ["n", "no"]:
+                    print("Push cancelled.")
+                    break  # Exit the push loop
+                else:
+                    print("Reply with 'y' to push or 'n' to cancel.")
         except Exception as e:
             raise Exception(f"Error creating commit: {e}")

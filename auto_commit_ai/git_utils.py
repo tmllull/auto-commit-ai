@@ -84,3 +84,39 @@ class GitUtils:
             )
         except subprocess.CalledProcessError as e:
             raise Exception(f"Error committing changes: {e}")
+
+    @staticmethod
+    def push_changes():
+        """Pushes the committed changes to the remote repository."""
+        try:
+            print("Attempting to push changes...")
+            # Detect the current branch to push
+            branch_result = subprocess.run(
+                ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            current_branch = branch_result.stdout.strip()
+
+            # Detect the remote to push to (e.g., origin)
+            remote_result = subprocess.run(
+                ["git", "remote"],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            remote = (
+                remote_result.stdout.splitlines()[0].strip()
+                if remote_result.stdout.strip()
+                else "origin"
+            )  # Default to 'origin' if no remotes found
+
+            subprocess.run(["git", "push", remote, current_branch], check=True)
+            print("✅ Push successful!")
+        except subprocess.CalledProcessError as e:
+            raise Exception(
+                f"Error pushing changes: {e}\nPlease check your remote configuration and permissions."
+            )
+        except Exception as e:
+            raise Exception(f"An unexpected error occurred during push: {e}")
