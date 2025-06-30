@@ -32,7 +32,20 @@ class Config:
     @classmethod
     def from_env(cls) -> "Config":
         """Load configuration from environment variables."""
-        load_dotenv()
+        current_dir_dotenv = os.path.join(os.getcwd(), ".auto_commit_ai.env")
+        home_dir_dotenv = os.path.join(os.path.expanduser("~"), ".auto_commit_ai.env")
+
+        if os.path.exists(current_dir_dotenv):
+            load_dotenv(dotenv_path=current_dir_dotenv)
+
+        elif os.path.exists(home_dir_dotenv):
+            load_dotenv(dotenv_path=home_dir_dotenv, override=True)
+        else:
+            print(
+                "No .env file found in the current directory or home directory. "
+                "Please, create a .auto_commit_ai.env file with the necessary configuration variables."
+            )
+            pass
 
         return cls(
             # OpenAI
