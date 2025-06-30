@@ -164,3 +164,4 @@ cython_debug/
 
 # Custom
 .auto_commit_ai.env
+*.env
