@@ -1,19 +1,20 @@
-# AutoCommit AI
+# AutoCommitAI 🤖
 
-Generate conventional commit messages with AI, directly from your terminal.
+Automatic commit message generator using AI. With some extra features.
 
 ## 🚀 Features
 
-- **AI-Powered commit messages**: Automatically generates commit messages based on your staged or all changes using advanced AI models.
-- **Push changes**: Automatically pushes your committed changes to the remote repository.
-- **Multiple AI provider support**: Seamlessly switch between OpenAI, Google Gemini, and Azure OpenAI.
-- **Configurable**: Easily configure your AI provider, model, and other settings via environment variables.
-- **Language support**: Generate commit messages in various languages (defaulting to English).
-- **User confirmation**: Always prompts for user confirmation before committing or pushing changes.
+- 🧠 **Multiple AI providers**: OpenAI, Google Gemini and Azure OpenAI. Other integrations will be added in the future
+- 🌍 **Multi-language support**: Generate commits in Spanish, English, French, German, etc.
+- 📋 **Interactive staging**: Select which files to include in the commit
+- 👀 **Preview mode**: Generate messages without committing. Yes, the "final" message will be different, but you can see an approach
+- 📊 **Repository information**: Status, history, branches
+- 🔄 **Automation**: Auto-confirm mode for CI/CD
+- 📱 **JSON output**: Structured format for tool integration
 
 ## 📦 Installation
 
-You can install `AutoCommit AI` directly from PyPI using pip:
+You can install AutoCommit AI directly from PyPI using pip:
 
 ```bash
 pip install auto-commit-ai
@@ -27,65 +28,184 @@ cd auto-commit-ai
 pip install .
 ```
 
-## ⚙️ Configuration
+## 🔧 Configuration
 
-`AutoCommit AI` loads its configuration from environment variables. You can set these variables in a `.auto_commit_ai.env` file located in your current working directory (where your git repository is) or your home directory (`~/.auto_commit_ai.env`).
+**AutoCommit AI** loads its configuration from environment variables file. You can set these variables in a `.auto_commit_ai.env` file located in your current working directory (where your git repository is) or your home directory (~/.auto_commit_ai.env).
 
 NOTE: If you add the file to your working directory, remember to add it to your `.gitignore` file.
 
 The contents of the `.auto_commit_ai.env` can be found in the `.auto_commit_ai.env.template` file.
 
-## 🚀 Usage
+## 🎯 Basic Usage
 
-`AutoCommit AI` is a command-line tool. Navigate to your Git repository and run one of the following commands:
+**AutoCommit AI** is a command-line tool. Navigate to your Git repository and run one of the following commands:
 
 ```bash
+# Default command
 auto-commit-ai
 ```
 
 or
 
 ```bash
+# Alias for the default command
 acai
 ```
 
 This is the default command, and it will generate a commit message for your **staged changes only**.
 
-### Command Line Arguments
+Both commands, `auto-commit-ai` and `acai`, are equivalent and can be used interchangeably.
 
-You can customize the behavior using the following arguments:
-
-- `-h` or `--help`: Displays the help message.
-- `--provider` or `-p`: Specifies the AI provider to use for generating commit messages. Overrides the `DEFAULT_AI_PROVIDER` environment variable.
-  - Choices: `openai`, `google`, `azure`
-  - Example: `auto-commit-ai --provider google`
-- `--all` or `-a`: Adds all files (staged and unstaged) to the commit. By default, only staged changes are included.
-  - Example: `acai --all`
-- `--language` or `-l`: Sets the language for the generated commit message (e.g., 'en' for English, 'es' for Spanish) in ISO 639-1 format. Defaults to 'en'.
-  - Example: `acai --language es`
-
-### Usage Examples:
-
-In the following examples, both `auto-commit-ai` and `acai` are valid commands.
+### Basic commands
 
 ```bash
-# Generate a commit message for staged changes (default)
-auto-commit-ai
-
-# Include all files (staged and unstaged) in the commit
+# Include all changes (staged + unstaged + untracked)
 acai --all
 
-# Use Google Gemini as the AI provider
-auto-commit-ai --provider google
+# Use specific provider
+acai --provider google
 
-# Generate commit message in Spanish
-auto-commit-ai --language es
+# Generate in Spanish
+acai --language es
 ```
 
-## 🤝 Contributing
+### Preview message
 
-Contributions are welcome\! Please feel free to open issues or any feature requests.
+```bash
+# Preview without committing
+auto-commit-ai --preview
+
+# Preview including all changes
+acai --preview --all
+```
+
+### Interactive staging
+
+```bash
+# Select files for staging
+acai --stage
+```
+
+## 📊 Repository information
+
+```bash
+# Repository status
+acai --status
+
+# Commit history
+auto-commit-ai --history
+
+# Branch information
+acai --branches
+```
+
+## 🛠️ Advanced options
+
+### Automation
+
+```bash
+# Automatic mode (no confirmations)
+acai --auto-confirm
+
+# JSON output for scripts
+auto-commit-ai --output json
+
+# Specific repository
+auto-commit-ai --repo /path/to/repo
+```
+
+### Output control
+
+```bash
+# Don't show status before commit
+acai --no-status
+
+# Verbose mode for debugging
+acai --verbose
+```
+
+## 🌍 Supported languages
+
+The system supports ISO 639-1 language codes:
+
+- `en` - English (default)
+- `es` - Spanish
+- `fr` - French
+- `de` - German
+- `it` - Italian
+- `pt` - Portuguese
+- `ja` - Japanese
+- `zh` - Chinese
+- `ru` - Russian
+- And many more... As you use the ISO 639-1 codes, the system will adapt to your needs.
+
+## 📋 Usage Examples
+
+### Typical workflow
+
+```bash
+# 1. Check repository status
+acai --status
+
+# 2. Interactive file staging
+acai --stage
+
+# 3. Preview message
+acai --preview
+
+# 4. Generate final commit
+acai
+```
+
+### CI/CD automation
+
+```bash
+# Automatic commit in pipeline
+acai --all --auto-confirm --output json
+```
+
+### Working with specific repository
+
+```bash
+# Work with another repository
+acai --repo /path/to/project --status
+acai --repo /path/to/project --all
+```
+
+## 🔄 Workflow
+
+1. **Analysis**: Detects repository changes (staged, unstaged, untracked)
+2. **Generation**: Uses AI to analyze diffs and generate descriptive message
+3. **Review**: Shows generated message for confirmation
+4. **Commit**: Creates commit with generated message
+5. **Optional push**: Offers to push automatically
+
+## 📝 Message format
+
+Generated messages follow best practices:
+
+- **Title**: Concise line describing the main change
+- **Description**: Additional details when necessary
+- **Conventions**: Follows standards like _Conventional Commits_ when appropriate
+
+## 🚨 Error handling
+
+The system gracefully handles:
+
+- ❌ Non-Git repositories
+- ❌ No changes to commit
+- ❌ AI API errors
+- ❌ Connectivity issues
+- ❌ Incorrect configuration
 
 ## 📄 License
 
-This project is licensed under the [GNU Affero General Public License v3](https://www.gnu.org/licenses/agpl-3.0.en.html).
+This project is licensed under the GNU General Public License v3.0. See `LICENSE` file for more details.
+
+## 🆘 Support
+
+To report bugs or request features, please open an issue on the GitHub repository.
+
+---
+
+_Made with ❤️ for developers who value quality commits_
