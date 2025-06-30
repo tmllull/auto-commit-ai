@@ -14,7 +14,7 @@ Automatic commit message generator using AI. With some extra features.
 
 ## 📦 Installation
 
-You can install AutoCommit AI directly from PyPI using pip:
+You can install **AutoCommit AI** directly from PyPI using pip:
 
 ```bash
 pip install auto-commit-ai
