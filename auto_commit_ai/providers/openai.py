@@ -27,9 +27,9 @@ class OpenAIProvider(AIProvider):
         """Check if the provider is configured."""
         return bool(self.config.openai_api_key)
 
-    def generate_commit_message(self, diff_content: str) -> str:
+    def generate_commit_message(self, diff_content: str, language: str) -> str:
         """Generate a commit message using OpenAI."""
-        prompt = self._create_base_prompt(diff_content)
+        prompt = self._create_base_prompt(diff_content, language)
 
         try:
             response = self.client.chat.completions.create(

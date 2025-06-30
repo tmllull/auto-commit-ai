@@ -6,7 +6,7 @@ from .git_utils import GitUtils
 from .providers.factory import AIProviderFactory
 
 
-class AutoCommitGenerator:
+class AutoCommitAI:
     """Automatic commit message generator using AI providers."""
 
     def __init__(self, config: Config):
@@ -14,7 +14,10 @@ class AutoCommitGenerator:
         self.git_utils = GitUtils()
 
     def generate_and_commit(
-        self, provider_name: Optional[str] = None, include_all: bool = False
+        self,
+        provider_name: Optional[str] = None,
+        include_all: bool = False,
+        language: Optional[str] = None,
     ) -> None:
         """Generate a commit message using an AI provider and commit changes."""
 
@@ -55,7 +58,7 @@ class AutoCommitGenerator:
         # Generate the commit message
         print("Generating commit message...")
         try:
-            commit_message = ai_provider.generate_commit_message(diff_content)
+            commit_message = ai_provider.generate_commit_message(diff_content, language)
         except Exception as e:
             raise Exception(f"Error generating commit message: {e}")
 

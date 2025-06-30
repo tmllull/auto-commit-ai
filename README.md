@@ -10,13 +10,26 @@
 
 ## Installation
 
-For now, the module is not published on PyPI (yet). You can clone the repository:
+```bash
+pip install auto-commit-ai
+```
+
+Or clone the repository:
 
 ```bash
 git clone https://gitlab.com/tmllull/auto-commit-ai.git
 cd auto-commit-ai
 pip install .
 ```
+
+## Configuration
+
+There are 2 main ways to configure `auto-commit-ai`:
+
+1. Create a `.auto-commit-ai.env` into the root of your project. If you use this option, remember to add it to your `.gitignore`
+2. Create a `.auto-commit-ai.env` with the root of your user directory.
+
+After that, just fill the required parameters on `.auto-commit-ai.env`
 
 ## Usage
 
@@ -25,5 +38,3 @@ You can use `auto-commit-ai` from the command line:
 ```bash
 auto-commit-ai
 ```
-
-...

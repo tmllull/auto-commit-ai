@@ -26,12 +26,12 @@ class GoogleProvider(AIProvider):
         """Check if the provider is configured."""
         return bool(self.config.google_api_key)
 
-    def generate_commit_message(self, diff_content: str) -> str:
+    def generate_commit_message(self, diff_content: str, language: str) -> str:
         """Generate a commit message using Google Gemini."""
         prompt = (
             self.prompts.GOOGLE_SYSTEM_PROMPT
             + "\n\n"
-            + self._create_base_prompt(diff_content)
+            + self._create_base_prompt(diff_content, language)
         )
 
         try:

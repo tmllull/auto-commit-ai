@@ -30,9 +30,9 @@ class AzureOpenAIProvider(AIProvider):
         """Check if the provider is configured."""
         return bool(self.config.azure_api_key and self.config.azure_endpoint)
 
-    def generate_commit_message(self, diff_content: str) -> str:
+    def generate_commit_message(self, diff_content: str, language: str) -> str:
         """Generate a commit message using Azure OpenAI."""
-        prompt = self._create_base_prompt(diff_content)
+        prompt = self._create_base_prompt(diff_content, language)
 
         try:
             response = self.client.chat.completions.create(

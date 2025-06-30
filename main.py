@@ -1,6 +1,6 @@
 import sys
 
-from auto_commit_ai import AIProviderFactory, AutoCommitGenerator, Config
+from auto_commit_ai import AIProviderFactory, AutoCommitAI, Config
 
 
 def basic_example():
@@ -12,7 +12,7 @@ def basic_example():
         config = Config.from_env()
 
         # Create the commit message generator
-        generator = AutoCommitGenerator(config)
+        generator = AutoCommitAI(config)
 
         # Generate and commit changes (uses default provider and only staged files)
         generator.generate_and_commit()
@@ -30,7 +30,7 @@ def params_example():
         config = Config.from_env()
 
         # Create the commit message generator
-        generator = AutoCommitGenerator(config)
+        generator = AutoCommitAI(config)
 
         # Use Google Gemini as the provider and include all files (staged and unstaged)
         generator.generate_and_commit(
@@ -57,7 +57,7 @@ def custom_configuration_example():
         )
 
         # Create the commit message generator with the custom configuration
-        generator = AutoCommitGenerator(config)
+        generator = AutoCommitAI(config)
 
         # Generate and commit changes using the custom configuration
         generator.generate_and_commit()

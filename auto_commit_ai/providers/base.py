@@ -17,7 +17,7 @@ class AIProvider(ABC):
         self.prompts = prompts
 
     @abstractmethod
-    def generate_commit_message(self, diff_content: str) -> json:
+    def generate_commit_message(self, diff_content: str, language: str) -> json:
         """Generate a commit message based on the provided diff content."""
         pass
 
@@ -26,9 +26,11 @@ class AIProvider(ABC):
         """Check if the provider is configured."""
         pass
 
-    def _create_base_prompt(self, diff_content: str) -> str:
+    def _create_base_prompt(self, diff_content: str, language: str) -> str:
         """Create the base prompt for generating commit messages."""
-        return prompts.BASE_COMMIT_PROMPT.format(diff_content=diff_content)
+        return prompts.BASE_COMMIT_PROMPT.format(
+            diff_content=diff_content, language=language
+        )
 
     def _clean_markdown_json_block(self, content: str) -> str:
         """Rremove markdown code blocks and extract JSON content."""

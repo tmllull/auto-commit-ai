@@ -25,9 +25,9 @@ class Config:
     azure_api_version: Optional[str] = None
 
     # General
-    default_provider: str = "openai"
-    max_tokens: int = 150
-    temperature: float = 0.3
+    default_provider: Optional[str] = None
+    max_tokens: Optional[int] = None
+    temperature: Optional[float] = None
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -42,7 +42,7 @@ class Config:
             load_dotenv(dotenv_path=home_dir_dotenv, override=True)
         else:
             print(
-                "No .env file found in the current directory or home directory. "
+                "No .auto_commit_ai.env file found in the current or home directory. "
                 "Please, create a .auto_commit_ai.env file with the necessary configuration variables."
             )
             pass
@@ -61,7 +61,7 @@ class Config:
             azure_model=os.getenv("AZURE_OPENAI_MODEL"),
             azure_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
             # General
-            default_provider=os.getenv("DEFAULT_AI_PROVIDER", "openai"),
+            default_provider=os.getenv("DEFAULT_AI_PROVIDER"),
             max_tokens=int(os.getenv("MAX_TOKENS", "200")),
             temperature=float(os.getenv("TEMPERATURE", "0.3")),
         )

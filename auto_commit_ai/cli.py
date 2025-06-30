@@ -5,7 +5,7 @@
 import argparse
 import sys
 
-from .core import AutoCommitGenerator, Config
+from .core import AutoCommitAI, Config
 
 
 def main():
@@ -18,27 +18,8 @@ Usage examples:
   %(prog)s                    # Generate a commit message for staged changes
   %(prog)s --all              # Include all files (staged and unstaged) in the commit
   %(prog)s --provider google  # Use Google Gemini
-  %(prog)s --provider azure   # Use Azure OpenAI
-
-Required environment variables (.env):
-  # OpenAI
-  OPENAI_API_KEY=your_api_key
-  OPENAI_MODEL=gpt-3.5-turbo
-  
-  # Google Gemini
-  GOOGLE_API_KEY=your_api_key
-  GOOGLE_MODEL=gemini-pro
-  
-  # Azure OpenAI
-  AZURE_OPENAI_API_KEY=your_api_key
-  AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-  AZURE_OPENAI_MODEL=gpt-35-turbo
-  
-  # General
-  DEFAULT_AI_PROVIDER=openai  # openai, google, azure
-  MAX_TOKENS=200 # Maximum tokens for the AI response
-  TEMPERATURE=0.3 # Controls randomness in AI responses (0.1 = deterministic, 1.0 = more random)
-        """,
+  %(prog)s --language es      # Generate commit message in Spanish (ISO 639-1)
+    """,
     )
 
     parser.add_argument(
@@ -56,7 +37,10 @@ Required environment variables (.env):
     )
 
     parser.add_argument(
-        "--version", "-v", action="version", version="Auto Commit Generator 0.1.0"
+        "--language",
+        "-l",
+        default="en",  # Default to English if not specified
+        help="Language for the generated commit message (e.g., 'en' for English, 'es' for Spanish), in format ISO 639-1. Defaults to 'en'.",
     )
 
     args = parser.parse_args()
@@ -66,8 +50,10 @@ Required environment variables (.env):
         config = Config.from_env()
 
         # Create and execute the AutoCommitGenerator
-        generator = AutoCommitGenerator(config)
-        generator.generate_and_commit(provider_name=args.provider, include_all=args.all)
+        generator = AutoCommitAI(config)
+        generator.generate_and_commit(
+            provider_name=args.provider, include_all=args.all, language=args.language
+        )
 
     except KeyboardInterrupt:
         print("\n\nOperation cancelled by user.", file=sys.stderr)

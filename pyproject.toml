@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "auto-commit-ai"
-version = "0.1.0"
+version = "0.1.1"
 description = "Generate automatic commit messages using AI"
 authors = [{ name = "Toni Miquel Llull", email = "tonimiquel.llull@gmail.com" }]
 license = { text = "GNU AGPL v3" }
@@ -23,6 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 [project.urls]
