@@ -25,6 +25,7 @@ class Config:
     azure_api_version: Optional[str] = None
 
     # General
+    default_lang: Optional[str] = None
     default_provider: Optional[str] = None
     max_tokens: Optional[int] = None
     temperature: Optional[float] = None
@@ -61,6 +62,7 @@ class Config:
             azure_model=os.getenv("AZURE_OPENAI_MODEL"),
             azure_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
             # General
+            default_lang=os.getenv("DEFAULT_LANG", "en"),
             default_provider=os.getenv("DEFAULT_AI_PROVIDER"),
             max_tokens=int(os.getenv("MAX_TOKENS", "200")),
             temperature=float(os.getenv("TEMPERATURE", "0.3")),

@@ -1,7 +1,7 @@
 import json
 import re
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from . import prompts
 
@@ -17,7 +17,9 @@ class AIProvider(ABC):
         self.prompts = prompts
 
     @abstractmethod
-    def generate_commit_message(self, diff_content: str, language: str) -> json:
+    def generate_commit_message(
+        self, diff_content: str, language: Optional[str] = None
+    ) -> json:
         """Generate a commit message based on the provided diff content."""
         pass
 
@@ -26,8 +28,11 @@ class AIProvider(ABC):
         """Check if the provider is configured."""
         pass
 
-    def _create_base_prompt(self, diff_content: str, language: str) -> str:
+    def _create_base_prompt(
+        self, diff_content: str, language: Optional[str] = None
+    ) -> str:
         """Create the base prompt for generating commit messages."""
+        language = language or self.config.default_lang or "en"
         return prompts.BASE_COMMIT_PROMPT.format(
             diff_content=diff_content, language=language
         )

@@ -1,5 +1,5 @@
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from .base import AIProvider
 from .prompts import BASE_COMMIT_PROMPT, OPENAI_SYSTEM_PROMPT
@@ -30,8 +30,11 @@ class AzureOpenAIProvider(AIProvider):
         """Check if the provider is configured."""
         return bool(self.config.azure_api_key and self.config.azure_endpoint)
 
-    def generate_commit_message(self, diff_content: str, language: str) -> str:
+    def generate_commit_message(
+        self, diff_content: str, language: Optional[str] = None
+    ) -> str:
         """Generate a commit message using Azure OpenAI."""
+        language = language or self.config.default_lang or "en"
         prompt = self._create_base_prompt(diff_content, language)
 
         try:

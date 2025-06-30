@@ -54,7 +54,7 @@ def setup_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--language",
         "-l",
-        default="en",
+        type=str,
         help="Language for commit message (ISO 639-1 format, e.g., 'en', 'es', 'fr')",
     )
 

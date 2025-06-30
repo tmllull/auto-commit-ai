@@ -1,5 +1,5 @@
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from .base import AIProvider
 
@@ -26,8 +26,11 @@ class GoogleProvider(AIProvider):
         """Check if the provider is configured."""
         return bool(self.config.google_api_key)
 
-    def generate_commit_message(self, diff_content: str, language: str) -> str:
+    def generate_commit_message(
+        self, diff_content: str, language: Optional[str] = None
+    ) -> str:
         """Generate a commit message using Google Gemini."""
+        language = language or self.config.default_lang or "en"
         prompt = (
             self.prompts.GOOGLE_SYSTEM_PROMPT
             + "\n\n"
