@@ -59,11 +59,21 @@ class GitUtils:
 
     @staticmethod
     def has_unstaged_changes() -> bool:
-        """Checks if there are unstaged changes."""
+        """Checks if there are unstaged changes, including untracked files."""
         try:
-            result = subprocess.run(["git", "diff", "--quiet"], capture_output=True)
-            return result.returncode != 0
+            # Use 'git status --porcelain' to check for any changes,
+            # including untracked files.
+            # If there's any output, it means there are changes (modified, added, untracked).
+            result = subprocess.run(
+                ["git", "status", "--porcelain"],
+                capture_output=True,
+                text=True,
+                check=True,
+                encoding="utf-8",
+            )
+            return bool(result.stdout.strip())  # Returns True if there's any output
         except subprocess.CalledProcessError:
+            # This would happen if git command itself fails, not if there are no changes
             return False
 
     @staticmethod
