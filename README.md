@@ -9,6 +9,7 @@ Automatic commit message generator using AI. With some extra features.
 - 📋 **Interactive staging**: Select which files to include in the commit
 - 👀 **Preview mode**: Generate messages without committing. Yes, the "final" message will be different, but you can see an approach
 - 📊 **Repository information**: Status, history, branches
+- ✅ **User validation**: Aks for user validation before committing, to ensure the commit message is correct and the changes are intended
 - 🔄 **Automation**: Auto-confirm mode for CI/CD
 - 📱 **JSON output**: Structured format for tool integration
 
@@ -119,7 +120,7 @@ auto-commit-ai --repo /path/to/repo
 auto-commit-ai --custom-prompts /path/to/custom_prompts.py
 ```
 
-**⚠️ DISCLAIMER for `-custom-prompts` flag**: Use this flag by your own risk. It allows you to use custom prompts for commit message generation, but it may lead to unexpected results if the prompts are not properly formatted or tested. Check the `custom_prompts_example.py` file for an example of how to create your own prompts.
+**⚠️ DISCLAIMER for `--custom-prompts` flag**: Use this flag by your own risk. It allows you to use custom prompts for commit message generation, but it may lead to unexpected results if the prompts are not properly formatted or tested. Check the `custom_prompts_example.py` file for an example of how to create your own prompts.
 
 ### Output control
 
