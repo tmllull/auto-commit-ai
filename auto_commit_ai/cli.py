@@ -30,6 +30,7 @@ def setup_parser() -> argparse.ArgumentParser:
   %(prog)s --history                 # Show recent commit history
   %(prog)s --branches                # Show branch information
   %(prog)s --output json             # JSON output for automation
+  %(prog)s --custom-prompts ./my_prompts.py  # Use custom prompts file
 
 🔧 Providers: openai, google, azure
 🌍 Languages: en, es, fr, de, it, pt, ja, zh, ru, etc. (ISO 639-1)
@@ -115,6 +116,13 @@ def setup_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
+        "--custom-prompts",
+        "-c",
+        type=str,
+        help="Path to custom prompts file (Python module with prompts configuration)",
+    )
+
+    parser.add_argument(
         "--verbose", "-v", action="store_true", help="Enable verbose output"
     )
 
@@ -130,6 +138,24 @@ def validate_repository_path(repo_path: str) -> Path:
 
     if not path.is_dir():
         raise ValueError(f"Repository path is not a directory: {repo_path}")
+
+    return path
+
+
+def validate_custom_prompts_path(prompts_path: str) -> Path:
+    """Validate and return the custom prompts path."""
+    path = Path(prompts_path).resolve()
+
+    if not path.exists():
+        raise ValueError(f"Custom prompts file does not exist: {prompts_path}")
+
+    if not path.is_file():
+        raise ValueError(f"Custom prompts path is not a file: {prompts_path}")
+
+    if not path.suffix == ".py":
+        raise ValueError(
+            f"Custom prompts file must be a Python file (.py): {prompts_path}"
+        )
 
     return path
 
@@ -266,6 +292,23 @@ def handle_commit_action(auto_commit: AutoCommitAI, args: argparse.Namespace) ->
     return 0 if result["success"] else 1
 
 
+def create_auto_commit_instance(
+    args: argparse.Namespace, config: Config, repo_path: str
+) -> AutoCommitAI:
+    """Create AutoCommitAI instance with optional custom prompts."""
+    custom_prompts_path = None
+
+    if args.custom_prompts:
+        try:
+            custom_prompts_path = validate_custom_prompts_path(args.custom_prompts)
+            if args.verbose:
+                print(f"🎯 Using custom prompts from: {custom_prompts_path}")
+        except ValueError as e:
+            raise ValueError(f"Custom prompts validation failed: {e}")
+
+    return AutoCommitAI(config, repo_path, custom_prompts_path)
+
+
 def main():
     """Main function to handle command line arguments and execute operations."""
     parser = setup_parser()
@@ -279,7 +322,7 @@ def main():
         config = Config.from_env()
 
         # Create AutoCommitAI instance
-        auto_commit = AutoCommitAI(config, str(repo_path))
+        auto_commit = create_auto_commit_instance(args, config, str(repo_path))
 
         # Handle different actions
         if args.status:

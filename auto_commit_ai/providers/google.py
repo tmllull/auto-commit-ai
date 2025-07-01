@@ -10,8 +10,8 @@ if TYPE_CHECKING:
 class GoogleProvider(AIProvider):
     """Gooogle Gemini provider"""
 
-    def __init__(self, config: "Config"):
-        super().__init__(config)
+    def __init__(self, config: "Config", custom_prompts_path: Optional[str] = None):
+        super().__init__(config, custom_prompts_path)
         try:
             from google import genai
 
@@ -31,6 +31,7 @@ class GoogleProvider(AIProvider):
     ) -> str:
         """Generate a commit message using Google Gemini."""
         language = language or self.config.default_lang or "en"
+
         prompt = (
             self.prompts.SYSTEM_PROMPT
             + "\n\n"

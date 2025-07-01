@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+from pathlib import Path
+from typing import TYPE_CHECKING, Optional, Union
 
 from .azure import AzureOpenAIProvider
 from .base import AIProvider
@@ -14,7 +15,11 @@ class AIProviderFactory:
     """Factory to create AI providers."""
 
     @staticmethod
-    def create_provider(provider_name: str, config: "Config") -> AIProvider:
+    def create_provider(
+        provider_name: str,
+        config: "Config",
+        custom_prompts_path: Optional[Union[str, Path]] = None,
+    ) -> AIProvider:
         """Creaate an AI provider based on the provider name and configuration."""
         providers = {
             "openai": OpenAIProvider,
@@ -29,14 +34,13 @@ class AIProviderFactory:
                 f"Provider '{provider_name}' not available. Available: {available}"
             )
 
-        provider = providers[provider_name](config)
+        provider = providers[provider_name](config, custom_prompts_path)
 
         if not provider.is_configured():
             raise ValueError(
                 f"Provider '{provider_name}' is not configured correctly. "
                 f"Check your configuration settings."
             )
-
         return provider
 
     @staticmethod

@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from .config import Config
 from .git_utils import GitUtils
@@ -10,10 +10,16 @@ from .providers.factory import AIProviderFactory
 class AutoCommitAI:
     """Automatic commit message generator using AI providers."""
 
-    def __init__(self, config: Config, repo_path: str = "."):
+    def __init__(
+        self,
+        config: Config,
+        repo_path: str = ".",
+        custom_prompts_path: Optional[Union[str, Path]] = None,
+    ):
         self.config = config
         self.git_utils = GitUtils(repo_path)
         self.repo_path = repo_path
+        self.custom_prompts_path = custom_prompts_path
 
     def _validate_repository(self) -> None:
         """Validate that we're in a Git repository."""
@@ -24,7 +30,9 @@ class AutoCommitAI:
         """Get the AI provider instance."""
         provider_name = provider_name or self.config.default_provider
         try:
-            return AIProviderFactory.create_provider(provider_name, self.config)
+            return AIProviderFactory.create_provider(
+                provider_name, self.config, custom_prompts_path=self.custom_prompts_path
+            )
         except Exception as e:
             raise Exception(f"Error configuring AI provider '{provider_name}': {e}")
 

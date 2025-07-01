@@ -27,6 +27,7 @@ class Config:
     # Ollama
     ollama_api_url: Optional[str] = None
     ollama_model: Optional[str] = None
+    custom_prompts_path: Optional[str] = None
 
     # General
     default_lang: Optional[str] = None
@@ -70,6 +71,7 @@ class Config:
             ollama_model=os.getenv("OLLAMA_MODEL"),
             # General
             default_lang=os.getenv("DEFAULT_LANG", "en"),
+            # custom_prompts_path=os.getenv("CUSTOM_PROMPTS_PATH"),
             default_provider=os.getenv("DEFAULT_AI_PROVIDER"),
             max_tokens=int(os.getenv("MAX_TOKENS", "200")),
             temperature=float(os.getenv("TEMPERATURE", "0.3")),

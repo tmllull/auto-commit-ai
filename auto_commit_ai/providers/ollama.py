@@ -10,8 +10,8 @@ if TYPE_CHECKING:
 class OllamaProvider(AIProvider):
     """Ollama provider"""
 
-    def __init__(self, config: "Config"):
-        super().__init__(config)
+    def __init__(self, config: "Config", custom_prompts_path: Optional[str] = None):
+        super().__init__(config, custom_prompts_path)
         try:
             from ollama import Client
 
