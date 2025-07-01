@@ -1,0 +1,31 @@
+# .github/workflows/sonarcloud.yml
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  sonarcloud-check:
+    runs-on: ubuntu-latest
+    container:
+      image: sonarsource/sonar-scanner-cli:latest
+      options: --entrypoint ""
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_USER_HOME: ${{ github.workspace }}/.sonar
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache SonarCloud
+        uses: actions/cache@v4
+        with:
+          path: .sonar/cache
+          key: ${{ runner.os }}-sonar
+
+      - name: Run SonarScanner
+        run: sonar-scanner
