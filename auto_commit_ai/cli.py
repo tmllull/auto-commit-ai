@@ -3,10 +3,8 @@
 # ================================
 
 import argparse
-import json
 import sys
 from pathlib import Path
-from typing import Optional
 
 from .core import AutoCommitAI, Config
 
@@ -25,14 +23,12 @@ def setup_parser() -> argparse.ArgumentParser:
   %(prog)s --preview                 # Preview message without committing
   %(prog)s --status                  # Show repository status
   %(prog)s --stage                   # Interactive file staging
-  %(prog)s --auto-confirm            # Skip confirmation prompts
   %(prog)s --repo /path/to/repo      # Work with specific repository
   %(prog)s --history                 # Show recent commit history
   %(prog)s --branches                # Show branch information
-  %(prog)s --output json             # JSON output for automation
   %(prog)s --custom-prompts ./my_prompts.py  # Use custom prompts file
 
-🔧 Providers: openai, google, azure
+🔧 Providers: openai, google, azure, ollama
 🌍 Languages: en, es, fr, de, it, pt, ja, zh, ru, etc. (ISO 639-1)
     """,
     )
@@ -94,25 +90,10 @@ def setup_parser() -> argparse.ArgumentParser:
         "--branches", action="store_true", help="Show branch information"
     )
 
-    # Behavior modifiers
-    parser.add_argument(
-        "--auto-confirm",
-        action="store_true",
-        help="Skip user confirmation prompts (useful for automation)",
-    )
-
     parser.add_argument(
         "--no-status",
         action="store_true",
         help="Don't show repository status before generating commit",
-    )
-
-    parser.add_argument(
-        "--output",
-        "-o",
-        choices=["text", "json"],
-        default="text",
-        help="Output format (text for human-readable, json for automation)",
     )
 
     parser.add_argument(
@@ -160,17 +141,12 @@ def validate_custom_prompts_path(prompts_path: str) -> Path:
     return path
 
 
-def print_json_output(data: dict) -> None:
-    """Print data in JSON format."""
-    print(json.dumps(data, indent=2, default=str))
-
-
 def print_repository_status(auto_commit: AutoCommitAI) -> None:
     """Print detailed repository status."""
     repo_info = auto_commit.get_repository_info()
 
     if "error" in repo_info:
-        print(f"❌ Error: {repo_info['error']}", file=sys.stderr)
+        print(f"❌ Error on repository status: {repo_info['error']}", file=sys.stderr)
         return
 
     status = repo_info["status"]
@@ -260,18 +236,12 @@ def handle_preview_action(auto_commit: AutoCommitAI, args: argparse.Namespace) -
         provider_name=args.provider, include_all=args.all, language=args.language
     )
 
-    if args.output == "json":
-        print_json_output({"preview": message, "success": message is not None})
-
     return 0 if message else 1
 
 
 def handle_stage_action(auto_commit: AutoCommitAI, args: argparse.Namespace) -> int:
     """Handle interactive staging action."""
     success = auto_commit.stage_interactive()
-
-    if args.output == "json":
-        print_json_output({"staged": success})
 
     return 0 if success else 1
 
@@ -283,11 +253,7 @@ def handle_commit_action(auto_commit: AutoCommitAI, args: argparse.Namespace) ->
         include_all=args.all,
         language=args.language,
         show_status=not args.no_status,
-        auto_confirm=args.auto_confirm,
     )
-
-    if args.output == "json":
-        print_json_output(result)
 
     return 0 if result["success"] else 1
 
@@ -326,34 +292,15 @@ def main():
 
         # Handle different actions
         if args.status:
-            if args.output == "json":
-                print_json_output(auto_commit.get_repository_info())
-            else:
-                print_repository_status(auto_commit)
+            print_repository_status(auto_commit)
             return 0
 
         elif args.history:
-            if args.output == "json":
-                try:
-                    commits = auto_commit.git_utils.get_commit_history(max_count=10)
-                    print_json_output({"commits": commits})
-                except Exception as e:
-                    print_json_output({"error": str(e)})
-                    return 1
-            else:
-                print_commit_history(auto_commit)
+            print_commit_history(auto_commit)
             return 0
 
         elif args.branches:
-            if args.output == "json":
-                try:
-                    branches = auto_commit.git_utils.get_branches()
-                    print_json_output({"branches": branches})
-                except Exception as e:
-                    print_json_output({"error": str(e)})
-                    return 1
-            else:
-                print_branch_info(auto_commit)
+            print_branch_info(auto_commit)
             return 0
 
         elif args.preview:
@@ -380,7 +327,7 @@ def main():
 
             traceback.print_exc()
         else:
-            print(f"❌ Error: {e}", file=sys.stderr)
+            print(f"❌ Error in main process: {e}", file=sys.stderr)
         return 1
 
 

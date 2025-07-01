@@ -1,17 +1,19 @@
 # AutoCommitAI 🤖
 
-Automatic commit message generator using AI. With some extra features.
+Automatic commit message generator using AI, with some extra features. But first, why?
 
-## 🚀 Features
+## ❓ Why AutoCommit AI?
 
-- 🧠 **Multiple AI providers**: OpenAI, Google Gemini and Azure OpenAI. Other integrations will be added in the future
+Writing commit messages is often a tedious task, and it is not always easy to condense or describe the changes we have made (or the bugs we have introduced), but fortunately this message is not as critical as the code we develop. AI can do a lot of things, although the less important that task is, the better. So for this one, it could help us generate meaningful and descriptive messages automatically, adding those “best practices” that, of course, we all apply in our commit messages. And yes, it creates the title and the description.
+
+## 🚀 Main features
+
+- 🧠 **Multiple AI providers**: OpenAI, Google Gemini, Azure OpenAI and Ollama
 - 🌍 **Multi-language support**: Generate commits in Spanish, English, French, German, etc.
 - 📋 **Interactive staging**: Select which files to include in the commit
-- 👀 **Preview mode**: Generate messages without committing. Yes, the "final" message will be different, but you can see an approach
+- 👀 **Preview mode**: Generate messages without committing. Yes, the “final” message will be different, but you can see an approach
 - 📊 **Repository information**: Status, history, branches
-- ✅ **User validation**: Aks for user validation before committing, to ensure the commit message is correct and the changes are intended
-- 🔄 **Automation**: Auto-confirm mode for CI/CD
-- 📱 **JSON output**: Structured format for tool integration
+- ✅ **User validation**: Aks for user validation before committing
 
 **⚠️ DISCLAIMER for Ollama**: The Ollama integration is experimental and may not work as expected, as there are a lot of models, and some of theme are very limited. It is recommended to use OpenAI or Google Gemini for production use.
 
@@ -35,7 +37,7 @@ pip install .
 
 **AutoCommit AI** loads its configuration from environment variables file. You can set these variables in a `.auto_commit_ai.env` file located in your current working directory (where your git repository is) or your home directory (~/.auto_commit_ai.env).
 
-NOTE: If you add the file to your working directory, remember to add it to your `.gitignore` file.
+**NOTE**: If you add the file to your working directory, remember to add it to your `.gitignore` file.
 
 The contents of the `.auto_commit_ai.env` can be found in the `.auto_commit_ai.env.template` file.
 
@@ -62,6 +64,12 @@ Both commands, `auto-commit-ai` and `acai`, are equivalent and can be used inter
 ### Basic commands
 
 ```bash
+# Generates a commit message only for staged changes
+auto-commit-ai
+
+# Show help message
+auto-commit-ai -h
+
 # Include all changes (staged + unstaged + untracked)
 acai --all
 
@@ -75,7 +83,7 @@ acai --language es
 ### Preview message
 
 ```bash
-# Preview without committing
+# Preview without committing option
 auto-commit-ai --preview
 
 # Preview including all changes
@@ -104,15 +112,7 @@ acai --branches
 
 ## 🛠️ Advanced options
 
-### Automation
-
 ```bash
-# Automatic mode (no confirmations)
-acai --auto-confirm
-
-# JSON output for scripts
-auto-commit-ai --output json
-
 # Specific repository
 auto-commit-ai --repo /path/to/repo
 
@@ -163,13 +163,6 @@ acai --preview
 
 # 4. Generate final commit
 acai
-```
-
-### CI/CD automation
-
-```bash
-# Automatic commit in pipeline
-acai --all --auto-confirm --output json
 ```
 
 ### Working with specific repository

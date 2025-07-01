@@ -189,7 +189,6 @@ class AutoCommitAI:
         include_all: bool = False,
         language: Optional[str] = None,
         show_status: bool = True,
-        auto_confirm: bool = False,
     ) -> Dict[str, Any]:
         """
         Generate a commit message using an AI provider and commit changes.
@@ -199,7 +198,6 @@ class AutoCommitAI:
             include_all: Include all changes (staged + unstaged + untracked)
             language: Language for the commit message
             show_status: Whether to show repository status
-            auto_confirm: Skip user confirmation (useful for automation)
 
         Returns:
             Dict with operation results
@@ -247,12 +245,11 @@ class AutoCommitAI:
             # Display generated message
             self._display_commit_message(commit_message)
 
-            # Get user confirmation (unless auto-confirm is enabled)
-            if not auto_confirm:
-                if not self._get_user_confirmation("✨ Use this commit message?"):
-                    print("🚫 Commit cancelled.")
-                    result["message"] = "Commit cancelled by user"
-                    return result
+            # Get user confirmation
+            if not self._get_user_confirmation("✨ Use this commit message?"):
+                print("🚫 Commit cancelled.")
+                result["message"] = "Commit cancelled by user"
+                return result
 
             # Stage all changes if requested
             if include_all:
@@ -267,10 +264,7 @@ class AutoCommitAI:
                 result["message"] = commit_message
 
                 # Handle post-commit actions
-                if not auto_confirm:
-                    self._handle_post_commit_actions()
-                else:
-                    print(f"✅ Commit successful! Hash: {commit_hash[:8]}")
+                self._handle_post_commit_actions()
 
             except Exception as e:
                 error_msg = f"Error creating commit: {e}"
