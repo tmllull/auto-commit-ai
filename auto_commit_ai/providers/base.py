@@ -33,12 +33,15 @@ class AIProvider(ABC):
     ) -> str:
         """Create the base prompt for generating commit messages."""
         language = language or self.config.default_lang or "en"
-        return prompts.BASE_COMMIT_PROMPT.format(
-            diff_content=diff_content, language=language
+        return (
+            prompts.BASE_COMMIT_PROMPT.format(
+                diff_content=diff_content, language=language
+            )
+            # + self.prompts.RESPONSE_JSON_EXAMPLE
         )
 
     def _clean_markdown_json_block(self, content: str) -> str:
-        """Rremove markdown code blocks and extract JSON content."""
+        """Remove markdown code blocks and extract JSON content."""
         match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", content, re.DOTALL)
         if match:
             return match.group(1)

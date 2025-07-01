@@ -34,21 +34,34 @@ class OpenAIProvider(AIProvider):
         language = language or self.config.default_lang or "en"
         prompt = self._create_base_prompt(diff_content, language)
 
-        try:
-            response = self.client.chat.completions.create(
-                model=self.config.openai_model,
-                messages=[
-                    {
-                        "role": "system",
-                        "content": self.prompts.OPENAI_SYSTEM_PROMPT,
-                    },
-                    {"role": "user", "content": prompt},
-                ],
-                max_tokens=self.config.max_tokens,
-                temperature=self.config.temperature,
+        max_attempts = 3
+        attemps = 0
+        while attemps < max_attempts:
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.config.openai_model,
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": self.prompts.SYSTEM_PROMPT,
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                )
+                response_content = response.choices[0].message.content.strip()
+                # Parse the response content as JSON
+                return json.loads(self._clean_markdown_json_block(response_content))
+            except Exception as e:
+                # if "Expecting value: line 1 column 1 (char 0)" in str(e):
+                #     print(
+                #         f" Error generating commit message with OpenAI. Probably the response is malformed."
+                #     )
+                # else:
+                #     print(f"Error generating commit message with OpenAI: {str(e)}")
+                #     print(f"Response content: {response}")
+                # print("Retrying...")
+                attemps += 1
+        if attemps == max_attempts:
+            raise Exception(
+                f"Error generating commit message with OpenAI after {max_attempts} attempts"
             )
-            response_content = response.choices[0].message.content.strip()
-            # Parse the response content as JSON
-            return json.loads(self._clean_markdown_json_block(response_content))
-        except Exception as e:
-            raise Exception(f"Error generating commit message with OpenAI: {str(e)}")

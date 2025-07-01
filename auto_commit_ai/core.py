@@ -23,7 +23,6 @@ class AutoCommitAI:
     def _get_ai_provider(self, provider_name: Optional[str] = None):
         """Get the AI provider instance."""
         provider_name = provider_name or self.config.default_provider
-
         try:
             return AIProviderFactory.create_provider(provider_name, self.config)
         except Exception as e:
@@ -224,7 +223,9 @@ class AutoCommitAI:
                 return result
 
             # Generate commit message
-            print("🤖 Generating commit message...")
+            print(
+                f"🤖 Generating commit message with {ai_provider.__class__.__name__}..."
+            )
             try:
                 commit_message = ai_provider.generate_commit_message(
                     diff_content, language
@@ -301,7 +302,9 @@ class AutoCommitAI:
                 return None
 
             # Generate commit message
-            print("🤖 Generating commit message preview...")
+            print(
+                f"🤖 Generating commit message preview with {ai_provider.__class__.__name__}..."
+            )
             commit_message = ai_provider.generate_commit_message(diff_content, language)
 
             # Display message

@@ -32,18 +32,33 @@ class GoogleProvider(AIProvider):
         """Generate a commit message using Google Gemini."""
         language = language or self.config.default_lang or "en"
         prompt = (
-            self.prompts.GOOGLE_SYSTEM_PROMPT
+            self.prompts.SYSTEM_PROMPT
             + "\n\n"
             + self._create_base_prompt(diff_content, language)
         )
 
-        try:
-            response = self.client.models.generate_content(
-                model=self.model, contents=prompt
-            )
-            response_content = response.text.strip()
-            return json.loads(self._clean_markdown_json_block(response_content))
-        except Exception as e:
+        max_attempts = 3
+        attemps = 0
+        while attemps < max_attempts:
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model, contents=prompt
+                )
+                response_content = response.text.strip()
+                return json.loads(self._clean_markdown_json_block(response_content))
+            except Exception as e:
+                # if "Expecting value: line 1 column 1 (char 0)" in str(e):
+                #     print(
+                #         f" Error generating commit message with Google Gemini. Probably the response is malformed."
+                #     )
+                # else:
+                #     print(
+                #         f"Error generating commit message with Google Gemini: {str(e)}"
+                #     )
+                #     print(f"Response content: {response}")
+                # print("Retrying...")
+                attemps += 1
+        if attemps == max_attempts:
             raise Exception(
-                f"Error generating commit message with Google Gemini: {str(e)}"
+                f"Error generating commit message with Google Gemini after {max_attempts} attempts"
             )

@@ -24,6 +24,10 @@ class Config:
     azure_model: Optional[str] = None
     azure_api_version: Optional[str] = None
 
+    # Ollama
+    ollama_api_url: Optional[str] = None
+    ollama_model: Optional[str] = None
+
     # General
     default_lang: Optional[str] = None
     default_provider: Optional[str] = None
@@ -37,7 +41,7 @@ class Config:
         home_dir_dotenv = os.path.join(os.path.expanduser("~"), ".auto_commit_ai.env")
 
         if os.path.exists(current_dir_dotenv):
-            load_dotenv(dotenv_path=current_dir_dotenv)
+            load_dotenv(dotenv_path=current_dir_dotenv, override=True)
 
         elif os.path.exists(home_dir_dotenv):
             load_dotenv(dotenv_path=home_dir_dotenv, override=True)
@@ -61,6 +65,9 @@ class Config:
             azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
             azure_model=os.getenv("AZURE_OPENAI_MODEL"),
             azure_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+            # Ollama
+            ollama_api_url=os.getenv("OLLAMA_API_URL"),
+            ollama_model=os.getenv("OLLAMA_MODEL"),
             # General
             default_lang=os.getenv("DEFAULT_LANG", "en"),
             default_provider=os.getenv("DEFAULT_AI_PROVIDER"),

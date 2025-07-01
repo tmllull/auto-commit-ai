@@ -12,6 +12,8 @@ Automatic commit message generator using AI. With some extra features.
 - 🔄 **Automation**: Auto-confirm mode for CI/CD
 - 📱 **JSON output**: Structured format for tool integration
 
+**⚠️ DISCLAIMER for Ollama**: The Ollama integration is experimental and may not work as expected, as there are a lot of models, and some of theme are very limited. It is recommended to use OpenAI or Google Gemini for production use.
+
 ## 📦 Installation
 
 You can install **AutoCommit AI** directly from PyPI using pip:

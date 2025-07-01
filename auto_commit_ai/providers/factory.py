@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from .azure import AzureOpenAIProvider
 from .base import AIProvider
 from .google import GoogleProvider
+from .ollama import OllamaProvider
 from .openai import OpenAIProvider
 
 if TYPE_CHECKING:
@@ -19,6 +20,7 @@ class AIProviderFactory:
             "openai": OpenAIProvider,
             "google": GoogleProvider,
             "azure": AzureOpenAIProvider,
+            "ollama": OllamaProvider,
         }
 
         if provider_name not in providers:
@@ -40,7 +42,7 @@ class AIProviderFactory:
     @staticmethod
     def get_available_providers() -> list[str]:
         """Returns a list of available AI providers."""
-        return ["openai", "google", "azure"]
+        return ["openai", "google", "azure", "ollama"]
 
     @staticmethod
     def is_provider_available(provider_name: str) -> bool:

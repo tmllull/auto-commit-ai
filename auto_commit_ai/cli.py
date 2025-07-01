@@ -40,7 +40,7 @@ def setup_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--provider",
         "-p",
-        choices=["openai", "google", "azure"],
+        choices=["openai", "google", "azure", "ollama"],
         help="AI provider to use for generating commit messages",
     )
 

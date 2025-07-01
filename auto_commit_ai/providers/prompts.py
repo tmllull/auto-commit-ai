@@ -1,16 +1,35 @@
 # System prompts
-OPENAI_SYSTEM_PROMPT = """You are an expert in Git who creates concise and descriptive commit titles and descriptions following best practices."""
-GOOGLE_SYSTEM_PROMPT = """You are an expert in Git who creates concise and descriptive commit titles and descriptions following best practices."""
+SYSTEM_PROMPT = """You are an expert in Git who creates concise and descriptive commit titles and descriptions following best practices."""
 
-# Base prompt
-BASE_COMMIT_PROMPT = """Based on the following code changes, generate a concise and descriptive commit title and description.
-The message should follow conventional commit format, and must be redacted in {language} (ISO 639-1). If there are more than one relevant change, 
-condense them into the title. Relevant changes are those that affect the functionality of the code, such as bug fixes, new features, 
-or significant refactoring, but not just minor changes like whitespace, formatting, or comments. If there are only one relevant change,
-use it as the title and provide a detailed description in the message.
+BASE_COMMIT_PROMPT = """
+Based on the following code changes, generate a concise and descriptive commit title and description.
 
-Changes:
+Requirements:
+- Follow the Conventional Commits format.
+- The message must be written in {language} (ISO 639-1).
+- If there are multiple relevant changes (i.e., those that affect functionality such as bug fixes, features, or significant refactors), condense them into the title.
+- If there's only one relevant change, use it as the title and provide a detailed description.
+- Ignore irrelevant changes like formatting, whitespace, or comments.
 
+Output instructions:
+- Respond **only** with a JSON object containing exactly two keys: "title" and "description".
+- Do **not** include any other text, explanation, or formatting outside of the JSON object.
+- The response **must** be a valid JSON object. No markdown formatting. No introductory or closing remarks.
+
+Code changes:
 {diff_content}
 
-Generate only the commit title and message, without additional explanations, and return them as a JSON object."""
+Return only the JSON object.
+
+"""
+
+RESPONSE_JSON_EXAMPLE = """
+RESPONSE JSON EXAMPLE:
+```json
+{
+    "title": "feat: add new feature",
+    "description": "This commit adds a new feature that improves the user experience by allowing users to customize their settings."
+}
+```
+
+"""
