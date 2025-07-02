@@ -26,11 +26,18 @@ class OllamaProvider(AIProvider):
         return bool(self.config.ollama_model)
 
     def generate_commit_message(
-        self, diff_content: str, language: Optional[str] = None
+        self,
+        diff_content: str,
+        language: Optional[str] = None,
+        branch_name: Optional[str] = None,
+        previous_commits: Optional[str] = None,
+        additional_context: Optional[str] = None,
     ) -> str:
         """Generate a commit message using Ollama."""
         language = language or self.config.default_lang or "en"
-        prompt = self._create_base_prompt(diff_content, language)
+        prompt = self._create_base_prompt(
+            diff_content, language, branch_name, previous_commits, additional_context
+        )
 
         max_attempts = 3
         attemps = 0

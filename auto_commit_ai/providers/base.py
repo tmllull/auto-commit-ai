@@ -49,7 +49,12 @@ class AIProvider(ABC):
 
     @abstractmethod
     def generate_commit_message(
-        self, diff_content: str, language: Optional[str] = None
+        self,
+        diff_content: str,
+        language: Optional[str] = None,
+        branch_name: Optional[str] = None,
+        previous_commits: Optional[str] = None,
+        additional_context: Optional[str] = None,
     ) -> json:
         """Generate a commit message based on the provided diff content."""
         pass
@@ -60,16 +65,34 @@ class AIProvider(ABC):
         pass
 
     def _create_base_prompt(
-        self, diff_content: str, language: Optional[str] = None
+        self,
+        diff_content: str,
+        language: Optional[str] = None,
+        branch_name: Optional[str] = None,
+        previous_commits: Optional[str] = None,
+        additional_context: Optional[str] = None,
     ) -> str:
         """Create the base prompt for generating commit messages."""
         language = language or self.config.default_lang or "en"
-        return (
-            prompts.BASE_COMMIT_PROMPT.format(
-                diff_content=diff_content, language=language
-            )
-            # + self.prompts.RESPONSE_JSON_EXAMPLE
+        prompt = (
+            self.prompts.BASE_COMMIT_PROMPT.format(language=language)
+            + self.prompts.RESPONSE_JSON_EXAMPLE
         )
+        if branch_name:
+            print(f"🔍 Using branch name for context")
+            prompt += self.prompts.BRANCH_NAME.format(branch_name=branch_name)
+        if previous_commits:
+            print(f"🔍 Using previous commits for context")
+            prompt += self.prompts.PREVIOUS_COMMITS.format(
+                previous_commits=previous_commits
+            )
+        if additional_context:
+            print(f"🔍 Using additional context for commit message")
+            prompt += self.prompts.ADDITIONAL_CONTEXT.format(
+                additional_context=additional_context
+            )
+        prompt += self.prompts.CODE_CHANGES.format(diff_content=diff_content)
+        return prompt
 
     def _clean_markdown_json_block(self, content: str) -> str:
         """Remove markdown code blocks and extract JSON content."""

@@ -188,6 +188,9 @@ class AutoCommitAI:
         provider_name: Optional[str] = None,
         include_all: bool = False,
         language: Optional[str] = None,
+        branch_name: Optional[bool] = False,
+        previous_commits: Optional[bool] = False,
+        additional_context: Optional[str] = None,
         show_status: bool = True,
     ) -> Dict[str, Any]:
         """
@@ -233,8 +236,20 @@ class AutoCommitAI:
                 f"🤖 Generating commit message with {ai_provider.__class__.__name__}..."
             )
             try:
+                if branch_name:
+                    branch_name = self.git_utils.get_branch_name()
+                else:
+                    branch_name = None
+                if previous_commits:
+                    previous_commits = self.git_utils.get_commit_history(max_count=5)
+                else:
+                    previous_commits = None
                 commit_message = ai_provider.generate_commit_message(
-                    diff_content, language
+                    diff_content,
+                    language,
+                    branch_name,
+                    previous_commits,
+                    additional_context,
                 )
             except Exception as e:
                 error_msg = f"Error generating commit message: {e}"
@@ -283,6 +298,9 @@ class AutoCommitAI:
         provider_name: Optional[str] = None,
         include_all: bool = False,
         language: Optional[str] = None,
+        branch_name: Optional[bool] = False,
+        previous_commits: Optional[bool] = False,
+        additional_context: Optional[str] = None,
     ) -> Optional[Dict[str, str]]:
         """
         Generate and preview a commit message without committing.
@@ -307,7 +325,21 @@ class AutoCommitAI:
             print(
                 f"🤖 Generating commit message preview with {ai_provider.__class__.__name__}..."
             )
-            commit_message = ai_provider.generate_commit_message(diff_content, language)
+            if branch_name:
+                branch_name = self.git_utils.get_branch_name()
+            else:
+                branch_name = None
+            if previous_commits:
+                previous_commits = self.git_utils.get_commit_history(max_count=5)
+            else:
+                previous_commits = None
+            commit_message = ai_provider.generate_commit_message(
+                diff_content,
+                language,
+                branch_name,
+                previous_commits,
+                additional_context,
+            )
 
             # Display message
             self._display_commit_message(commit_message)
