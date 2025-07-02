@@ -99,6 +99,13 @@ class GitUtils:
         except Exception as e:
             raise Exception(f"Error getting repository status: {e}")
 
+    def get_branch_name(self) -> str:
+        """Gets the current branch name."""
+        try:
+            return self.repo.active_branch.name
+        except Exception as e:
+            raise Exception(f"Error getting current branch name: {e}")
+
     def stage_all_changes(self):
         """Adds all changes to the staging area."""
         try:
