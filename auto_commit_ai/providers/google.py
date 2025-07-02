@@ -27,7 +27,12 @@ class GoogleProvider(AIProvider):
         return bool(self.config.google_api_key)
 
     def generate_commit_message(
-        self, diff_content: str, language: Optional[str] = None
+        self,
+        diff_content: str,
+        language: Optional[str] = None,
+        branch_name: Optional[str] = None,
+        previous_commits: Optional[str] = None,
+        additional_context: Optional[str] = None,
     ) -> str:
         """Generate a commit message using Google Gemini."""
         language = language or self.config.default_lang or "en"
@@ -35,9 +40,14 @@ class GoogleProvider(AIProvider):
         prompt = (
             self.prompts.SYSTEM_PROMPT
             + "\n\n"
-            + self._create_base_prompt(diff_content, language)
+            + self._create_base_prompt(
+                diff_content,
+                language,
+                branch_name,
+                previous_commits,
+                additional_context,
+            )
         )
-
         max_attempts = 3
         attemps = 0
         while attemps < max_attempts:

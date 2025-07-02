@@ -15,18 +15,16 @@ def setup_parser() -> argparse.ArgumentParser:
         description="🤖 Generate commit messages automatically using AI providers",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-🚀 Usage examples:
+🚀 Some examples:
   %(prog)s                           # Generate commit for staged changes
   %(prog)s --all                     # Include all files (staged + unstaged + untracked)
   %(prog)s --provider google         # Use Google Gemini
   %(prog)s --language es             # Generate in Spanish
   %(prog)s --preview                 # Preview message without committing
-  %(prog)s --status                  # Show repository status
   %(prog)s --stage                   # Interactive file staging
-  %(prog)s --repo /path/to/repo      # Work with specific repository
-  %(prog)s --history                 # Show recent commit history
-  %(prog)s --branches                # Show branch information
   %(prog)s --custom-prompts ./my_prompts.py  # Use custom prompts file
+  %(prog)s -ac                       # Additional context for commit message
+  %(prog)s --branch-name             # Use current branch name in commit context
 
 🔧 Providers: openai, google, azure, ollama
 🌍 Languages: en, es, fr, de, it, pt, ja, zh, ru, etc. (ISO 639-1)
@@ -86,10 +84,6 @@ def setup_parser() -> argparse.ArgumentParser:
         "--history", action="store_true", help="Show recent commit history"
     )
 
-    action_group.add_argument(
-        "--branches", action="store_true", help="Show branch information"
-    )
-
     parser.add_argument(
         "--no-status",
         action="store_true",
@@ -101,6 +95,27 @@ def setup_parser() -> argparse.ArgumentParser:
         "-c",
         type=str,
         help="Path to custom prompts file (Python module with prompts configuration)",
+    )
+
+    parser.add_argument(
+        "--branch-name",
+        "-bn",
+        action="store_true",
+        help="Use current branch name in commit context (default: False)",
+    )
+
+    parser.add_argument(
+        "--previous-commits",
+        "-pc",
+        action="store_true",
+        help="Use previous commits as context for commit message generation (default: False)",
+    )
+
+    parser.add_argument(
+        "--additional-context",
+        "-ac",
+        type=str,
+        help="Additional context to include in commit message generation",
     )
 
     parser.add_argument(
@@ -199,33 +214,6 @@ def print_commit_history(auto_commit: AutoCommitAI, count: int = 10) -> None:
     except Exception as e:
         print(f"❌ Error getting commit history: {e}", file=sys.stderr)
 
-
-def print_branch_info(auto_commit: AutoCommitAI) -> None:
-    """Print branch information."""
-    try:
-        branches = auto_commit.git_utils.get_branches()
-
-        print(f"\n{'='*60}")
-        print(f"🌿 BRANCH INFORMATION")
-        print(f"{'='*60}")
-
-        print(f"🎯 Current branch: {branches['current']}")
-
-        if branches["local"]:
-            print(f"\n📍 Local branches ({len(branches['local'])}):")
-            for branch in branches["local"]:
-                marker = "👉 " if branch == branches["current"] else "   "
-                print(f"{marker}{branch}")
-
-        if branches["remote"]:
-            print(f"\n🌐 Remote branches ({len(branches['remote'])}):")
-            for branch in branches["remote"][:10]:  # Show max 10
-                print(f"   {branch}")
-            if len(branches["remote"]) > 10:
-                print(f"   ... and {len(branches['remote']) - 10} more")
-
-        print(f"{'='*60}")
-
     except Exception as e:
         print(f"❌ Error getting branch information: {e}", file=sys.stderr)
 
@@ -233,7 +221,12 @@ def print_branch_info(auto_commit: AutoCommitAI) -> None:
 def handle_preview_action(auto_commit: AutoCommitAI, args: argparse.Namespace) -> int:
     """Handle preview commit message action."""
     message = auto_commit.preview_commit_message(
-        provider_name=args.provider, include_all=args.all, language=args.language
+        provider_name=args.provider,
+        include_all=args.all,
+        language=args.language,
+        branch_name=args.branch_name,
+        previous_commits=args.previous_commits,
+        additional_context=args.additional_context,
     )
 
     return 0 if message else 1
@@ -252,6 +245,9 @@ def handle_commit_action(auto_commit: AutoCommitAI, args: argparse.Namespace) ->
         provider_name=args.provider,
         include_all=args.all,
         language=args.language,
+        branch_name=args.branch_name,
+        previous_commits=args.previous_commits,
+        additional_context=args.additional_context,
         show_status=not args.no_status,
     )
 
@@ -297,10 +293,6 @@ def main():
 
         elif args.history:
             print_commit_history(auto_commit)
-            return 0
-
-        elif args.branches:
-            print_branch_info(auto_commit)
             return 0
 
         elif args.preview:
