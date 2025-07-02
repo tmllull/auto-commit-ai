@@ -51,7 +51,7 @@ class Config:
                 "No .auto_commit_ai.env file found in the current or home directory. "
                 "Please, create a .auto_commit_ai.env file with the necessary configuration variables."
             )
-            pass
+            exit(1)
 
         return cls(
             # OpenAI
@@ -71,7 +71,7 @@ class Config:
             ollama_model=os.getenv("OLLAMA_MODEL"),
             # General
             default_lang=os.getenv("DEFAULT_LANG", "en"),
-            # custom_prompts_path=os.getenv("CUSTOM_PROMPTS_PATH"),
+            custom_prompts_path=os.getenv("CUSTOM_PROMPTS_PATH"),
             default_provider=os.getenv("DEFAULT_AI_PROVIDER"),
             max_tokens=int(os.getenv("MAX_TOKENS", "200")),
             temperature=float(os.getenv("TEMPERATURE", "0.3")),

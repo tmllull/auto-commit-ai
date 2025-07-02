@@ -79,15 +79,15 @@ class AIProvider(ABC):
             + self.prompts.RESPONSE_JSON_EXAMPLE
         )
         if branch_name:
-            print(f"🔍 Using branch name for context")
+            print("🔍 Using branch name for context")
             prompt += self.prompts.BRANCH_NAME.format(branch_name=branch_name)
         if previous_commits:
-            print(f"🔍 Using previous commits for context")
+            print("🔍 Using previous commits for context")
             prompt += self.prompts.PREVIOUS_COMMITS.format(
                 previous_commits=previous_commits
             )
         if additional_context:
-            print(f"🔍 Using additional context for commit message")
+            print("🔍 Using additional context for commit message")
             prompt += self.prompts.ADDITIONAL_CONTEXT.format(
                 additional_context=additional_context
             )

@@ -148,7 +148,7 @@ def validate_custom_prompts_path(prompts_path: str) -> Path:
     if not path.is_file():
         raise ValueError(f"Custom prompts path is not a file: {prompts_path}")
 
-    if not path.suffix == ".py":
+    if path.suffix != ".py":
         raise ValueError(
             f"Custom prompts file must be a Python file (.py): {prompts_path}"
         )
@@ -214,9 +214,6 @@ def print_commit_history(auto_commit: AutoCommitAI, count: int = 10) -> None:
     except Exception as e:
         print(f"❌ Error getting commit history: {e}", file=sys.stderr)
 
-    except Exception as e:
-        print(f"❌ Error getting branch information: {e}", file=sys.stderr)
-
 
 def handle_preview_action(auto_commit: AutoCommitAI, args: argparse.Namespace) -> int:
     """Handle preview commit message action."""
@@ -232,7 +229,7 @@ def handle_preview_action(auto_commit: AutoCommitAI, args: argparse.Namespace) -
     return 0 if message else 1
 
 
-def handle_stage_action(auto_commit: AutoCommitAI, args: argparse.Namespace) -> int:
+def handle_stage_action(auto_commit: AutoCommitAI) -> int:
     """Handle interactive staging action."""
     success = auto_commit.stage_interactive()
 
@@ -299,7 +296,7 @@ def main():
             return handle_preview_action(auto_commit, args)
 
         elif args.stage:
-            return handle_stage_action(auto_commit, args)
+            return handle_stage_action(auto_commit)
 
         else:
             # Default action: generate and commit

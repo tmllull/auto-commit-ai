@@ -58,15 +58,7 @@ class OpenAIProvider(AIProvider):
                 response_content = response.choices[0].message.content.strip()
                 # Parse the response content as JSON
                 return json.loads(self._clean_markdown_json_block(response_content))
-            except Exception as e:
-                # if "Expecting value: line 1 column 1 (char 0)" in str(e):
-                #     print(
-                #         f" Error generating commit message with OpenAI. Probably the response is malformed."
-                #     )
-                # else:
-                #     print(f"Error generating commit message with OpenAI: {str(e)}")
-                #     print(f"Response content: {response}")
-                # print("Retrying...")
+            except Exception:
                 attemps += 1
         if attemps == max_attempts:
             raise Exception(
