@@ -23,11 +23,8 @@ def setup_parser() -> argparse.ArgumentParser:
   %(prog)s --preview                 # Preview message without committing
   %(prog)s --stage                   # Interactive file staging
   %(prog)s --custom-prompts ./my_prompts.py  # Use custom prompts file
-  %(prog)s -ac                       # Additional context for commit message
+  %(prog)s --context "abc"           # Additional context for commit message
   %(prog)s --branch-name             # Use current branch name in commit context
-
-🔧 Providers: openai, google, azure, ollama
-🌍 Languages: en, es, fr, de, it, pt, ja, zh, ru, etc. (ISO 639-1)
     """,
     )
 
@@ -92,28 +89,25 @@ def setup_parser() -> argparse.ArgumentParser:
 
     parser.add_argument(
         "--custom-prompts",
-        "-c",
         type=str,
         help="Path to custom prompts file (Python module with prompts configuration)",
     )
 
     parser.add_argument(
         "--branch-name",
-        "-bn",
         action="store_true",
         help="Use current branch name in commit context (default: False)",
     )
 
     parser.add_argument(
         "--previous-commits",
-        "-pc",
         action="store_true",
         help="Use previous commits as context for commit message generation (default: False)",
     )
 
     parser.add_argument(
-        "--additional-context",
-        "-ac",
+        "--context",
+        "-c",
         type=str,
         help="Additional context to include in commit message generation",
     )
@@ -223,7 +217,7 @@ def handle_preview_action(auto_commit: AutoCommitAI, args: argparse.Namespace) -
         language=args.language,
         branch_name=args.branch_name,
         previous_commits=args.previous_commits,
-        additional_context=args.additional_context,
+        additional_context=args.context,
     )
 
     return 0 if message else 1
@@ -244,7 +238,7 @@ def handle_commit_action(auto_commit: AutoCommitAI, args: argparse.Namespace) ->
         language=args.language,
         branch_name=args.branch_name,
         previous_commits=args.previous_commits,
-        additional_context=args.additional_context,
+        additional_context=args.context,
         show_status=not args.no_status,
     )
 

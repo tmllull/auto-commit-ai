@@ -11,9 +11,8 @@ Writing commit messages is often a tedious task, and it is not always easy to co
 - 🧠 **Multiple AI providers**: OpenAI, Google Gemini, Azure OpenAI and Ollama
 - 🌍 **Multi-language support**: Generate commits in Spanish, English, French, German, etc.
 - 📋 **Interactive staging**: Select which files to include in the commit
-- 👀 **Preview mode**: Generate messages without committing. Yes, the “final” message will be different, but you can see an approach
-- 📊 **Repository information**: Status, history, branches
 - ✅ **User validation**: Aks for user validation before committing
+- ➕ **Additional context**: Use extra information to generate more accurate messages, like branch name or manual context
 
 **⚠️ DISCLAIMER for Ollama**: The Ollama integration is experimental and may not work as expected, as there are a lot of models, and some of theme are very limited. It is recommended to use OpenAI or Google Gemini for production use.
 
@@ -118,6 +117,12 @@ auto-commit-ai --repo /path/to/repo
 
 # Specific repository
 auto-commit-ai --custom-prompts /path/to/custom_prompts.py
+
+# Use current branch name in commit context
+acai --branch-name
+
+# Additional context for commit message generation
+acai --context "Some extra context here"
 ```
 
 **⚠️ DISCLAIMER for `--custom-prompts` flag**: Use this flag by your own risk. It allows you to use custom prompts for commit message generation, but it may lead to unexpected results if the prompts are not properly formatted or tested. Check the `custom_prompts_example.py` file for an example of how to create your own prompts.
