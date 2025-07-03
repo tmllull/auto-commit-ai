@@ -104,9 +104,6 @@ acai --status
 
 # Commit history
 auto-commit-ai --history
-
-# Branch information
-acai --branches
 ```
 
 ## 🛠️ Advanced options

@@ -188,7 +188,7 @@ def print_repository_status(auto_commit: AutoCommitAI) -> None:
     print(f"{'='*60}")
 
 
-def print_commit_history(auto_commit: AutoCommitAI, count: int = 10) -> None:
+def print_commit_history(auto_commit: AutoCommitAI, count: int = 5) -> None:
     """Print recent commit history."""
     try:
         commits = auto_commit.git_utils.get_commit_history(max_count=count)
