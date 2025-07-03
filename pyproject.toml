@@ -27,9 +27,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://gitlab.com/tmllull/auto-commit-ai"
-Repository = "https://gitlab.com/tmllull/auto-commit-ai"
-Issues = "https://gitlab.com/tmllull/auto-commit-ai/issues"
+Homepage = "https://github.com/tmllull/auto-commit-ai"
+Repository = "https://github.com/tmllull/auto-commit-ai"
+Issues = "https://github.com/tmllull/auto-commit-ai/issues"
 
 [project.scripts]
 auto-commit-ai = "auto_commit_ai.cli:main"
@@ -37,7 +37,7 @@ acai = "auto_commit_ai.cli:main"
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }
-version = { attr = "auto_commit_ai._version.__version__" }
+# version = { attr = "auto_commit_ai._version.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["."]
