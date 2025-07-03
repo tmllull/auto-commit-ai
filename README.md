@@ -11,7 +11,7 @@ Writing commit messages is often a tedious task, and it is not always easy to co
 - 🧠 **Multiple AI providers**: OpenAI, Google Gemini, Azure OpenAI and Ollama
 - 🌍 **Multi-language support**: Generate commits in Spanish, English, French, German, etc.
 - 📋 **Interactive staging**: Select which files to include in the commit
-- ✅ **User validation**: Aks for user validation before committing
+- ✅ **User validation**: Ask for user validation before committing
 - ➕ **Additional context**: Use extra information to generate more accurate messages, like branch name or manual context
 
 **⚠️ DISCLAIMER for Ollama**: The Ollama integration is experimental and may not work as expected, as there are a lot of models, and some of theme are very limited. It is recommended to use OpenAI or Google Gemini for production use.
